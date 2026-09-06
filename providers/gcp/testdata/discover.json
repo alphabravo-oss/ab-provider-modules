@@ -1,0 +1,11 @@
+{
+  "items": [
+    {
+      "name": "web",
+      "id": 1,
+      "networkInterfaces": [
+        {"accessConfigs": [{"name": "external", "natIP": "1.2.3.4"}]}
+      ]
+    }
+  ]
+}

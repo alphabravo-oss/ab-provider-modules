@@ -1,0 +1,10 @@
+{
+  "value": [
+    {
+      "id": "/subscriptions/sub-1/resourceGroups/rg/providers/Microsoft.Storage/storageAccounts/logs",
+      "name": "logs",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "eastus"
+    }
+  ]
+}

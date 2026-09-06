@@ -1,0 +1,10 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:Get*", "s3:List*", "iam:Get*", "iam:List*", "ec2:Describe*", "ecr:Describe*", "ecr:Get*", "organizations:List*", "organizations:Describe*"],
+      "Resource": "*"
+    }
+  ]
+}

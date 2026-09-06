@@ -1,0 +1,120 @@
+{
+  "account": "123456789012",
+  "listBuckets": {
+    "Buckets": [{"Name": "payments"}, {"Name": "private"}],
+    "Owner": {"ID": "123456789012"}
+  },
+  "publicAccessBlock": {
+    "payments": {"PublicAccessBlockConfiguration": {"IgnorePublicAcls": false, "RestrictPublicBuckets": false}},
+    "private": {"PublicAccessBlockConfiguration": {"IgnorePublicAcls": true, "RestrictPublicBuckets": true}}
+  },
+  "accountSummary": {"SummaryMap": {"AccountMFAEnabled": 1, "AccountAccessKeysPresent": 0}},
+  "passwordPolicy": {"PasswordPolicy": {"MinimumPasswordLength": 14, "PasswordReusePrevention": 24}},
+  "ecrImageDigests": ["sha256:abc"],
+  "describeTrails": {
+    "TrailList": [{
+      "Name": "org",
+      "TrailARN": "arn:aws:cloudtrail:us-east-1:123456789012:trail/org",
+      "IsMultiRegionTrail": true,
+      "LogFileValidationEnabled": true,
+      "KmsKeyId": "arn:aws:kms:us-east-1:123456789012:key/x"
+    }]
+  },
+  "eventSelectors": {
+    "org": {"EventSelectors": [{"ReadWriteType": "All", "DataResources": [{"Type": "AWS::S3::Object"}]}]}
+  },
+  "describeRecorders": {
+    "ConfigurationRecorders": [{"RecordingGroup": {"AllSupported": true, "IncludeGlobalResourceTypes": true}}]
+  },
+  "describeNetworkAcls": {
+    "NetworkAcls": [{
+      "NetworkAclId": "acl-1",
+      "Entries": [
+        {"Egress": false, "RuleAction": "deny", "CidrBlock": "0.0.0.0/0", "Protocol": "6", "PortRange": {"From": 22, "To": 22}}
+      ]
+    }]
+  },
+  "describeSecurityGroups": {
+    "SecurityGroups": [{
+      "GroupId": "sg-1",
+      "GroupName": "default",
+      "IpPermissions": []
+    }]
+  },
+  "describeInstances": {
+    "Reservations": [{
+      "Instances": [{
+        "InstanceId": "i-1",
+        "MetadataOptions": {"HttpTokens": "required"},
+        "IamInstanceProfile": {"Arn": "arn:aws:iam::123456789012:instance-profile/p"}
+      }]
+    }]
+  },
+  "describeVolumes": {"Volumes": [{"VolumeId": "vol-1", "Encrypted": true}]},
+  "describeVpcs": {"Vpcs": [{"VpcId": "vpc-1"}]},
+  "describeFlowLogs": {"FlowLogs": [{"ResourceId": "vpc-1"}]},
+  "describeRouteTables": {"RouteTables": [{"VpcId": "vpc-1", "Routes": [{"DestinationCidrBlock": "10.0.0.0/16", "GatewayId": "local"}]}]},
+  "describeFileSystems": {"FileSystems": [{"FileSystemId": "fs-1", "Encrypted": true}]},
+  "listKeys": {"Keys": [{"KeyId": "key-1"}]},
+  "keyRotation": {"key-1": {"KeyRotationEnabled": true}},
+  "describeDBInstances": {
+    "DBInstances": [{
+      "DBInstanceIdentifier": "db-1",
+      "StorageEncrypted": true,
+      "PubliclyAccessible": false,
+      "AutoMinorVersionUpgrade": true
+    }]
+  },
+  "metricFilters": {
+    "MetricFilters": [
+      {"FilterPattern": "UnauthorizedOperation"},
+      {"FilterPattern": "ConsoleLogin"},
+      {"FilterPattern": "Root"},
+      {"FilterPattern": "DeleteGroupPolicy"},
+      {"FilterPattern": "PutBucketPolicy"},
+      {"FilterPattern": "AuthorizeSecurityGroupIngress"},
+      {"FilterPattern": "CreateNetworkAcl"},
+      {"FilterPattern": "CreateCustomerGateway"},
+      {"FilterPattern": "CreateRoute"},
+      {"FilterPattern": "CreateVpc"},
+      {"FilterPattern": "StopConfigurationRecorder"},
+      {"FilterPattern": "StopLogging"},
+      {"FilterPattern": "Failed authentication"},
+      {"FilterPattern": "organizations.amazonaws.com"},
+      {"FilterPattern": "DisableKey"}
+    ]
+  },
+  "listUsers": {"Users": [{"UserName": "alice", "CreateDate": "2026-01-01T00:00:00Z", "PasswordLastUsed": "2026-08-01T00:00:00Z"}]},
+  "userMfa": {"alice": {"MFADevices": [{"UserName": "alice"}]}},
+  "userKeys": {"alice": {"AccessKeyMetadata": [{"AccessKeyId": "AKIA", "CreateDate": "2026-06-01T00:00:00Z"}]}},
+  "userKeyLastUsed": {"alice": {"AccessKeyLastUsed": {"LastUsedDate": "2026-08-10T00:00:00Z", "Region": "us-east-1", "ServiceName": "s3"}}},
+  "getBucketLogging": {
+    "payments": {"LoggingEnabled": {"TargetBucket": "logs"}},
+    "private": {"LoggingEnabled": {"TargetBucket": "logs"}}
+  },
+  "getBucketVersioning": {
+    "payments": {"MFADelete": "Enabled"},
+    "private": {"MFADelete": "Enabled"}
+  },
+  "getBucketPolicy": {
+    "payments": {"Policy": "{\"Statement\":[{\"Condition\":{\"Bool\":{\"aws:SecureTransport\":\"false\"}}}]} "},
+    "private": {"Policy": "aws:SecureTransport"}
+  },
+  "contact": {"FullName": "Ops"},
+  "alternateContact": {"Name": "Sec", "EmailAddress": "sec@example.com"},
+  "listSamlProviders": {"SAMLProviderList": [{"Arn": "arn:aws:iam::123456789012:saml-provider/x"}]},
+  "macieStatus": "ENABLED",
+  "securityHubArn": "arn:aws:securityhub:us-east-1:123456789012:hub/default",
+  "listAnalyzers": {"Analyzers": [{"Status": "ACTIVE"}]},
+  "hardwareMfa": true,
+  "supportRole": true,
+  "awsAdminPolicy": false,
+  "customerAdminPolicy": false,
+  "expiredCerts": 0,
+  "usersAttachedPolicies": 0,
+  "staleAccessKeys": 0,
+  "accountImdsv2": "required",
+  "unrestrictedHostIngress": false,
+  "securityQuestions": true,
+  "rootUsed": false
+}
