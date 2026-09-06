@@ -4,6 +4,7 @@ go 1.26.7
 
 require (
 	cloud.google.com/go/compute v1.66.0
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.22.0
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.14.0
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources v1.2.0
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/storage/armstorage v1.8.0
@@ -23,14 +24,13 @@ require (
 	github.com/digitalocean/godo v1.204.0
 	github.com/hetznercloud/hcloud-go/v2 v2.47.0
 	github.com/linode/linodego v1.69.1
-	github.com/oracle/oci-go-sdk/v65 v65.123.2
+	github.com/oracle/oci-go-sdk/v65 v65.124.1
 	golang.org/x/oauth2 v0.36.0
 	google.golang.org/protobuf v1.36.11
 )
 
 require (
 	cloud.google.com/go/compute/metadata v0.9.0 // indirect
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.22.0 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.12.0 // indirect
 	github.com/AzureAD/microsoft-authentication-library-for-go v1.7.2 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.7.18 // indirect
