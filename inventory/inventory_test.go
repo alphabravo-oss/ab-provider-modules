@@ -78,3 +78,20 @@ func TestCollectRejectsUnsupportedConfiguration(t *testing.T) {
 		t.Fatal("unexpected provider call")
 	}
 }
+
+func TestImageCatalogOwnership(t *testing.T) {
+	for _, tc := range []struct{ cloud, body string }{
+		{"digitalocean", `{"images":[{"id":1,"name":"public","public":true,"status":"available"},{"id":2,"name":"owned","public":false,"status":"available"}],"links":{}}`},
+		{"hetzner", `{"images":[{"id":1,"name":"public","type":"system","status":"available"},{"id":2,"description":"owned","type":"snapshot","status":"available"}],"meta":{"pagination":{}}}`},
+	} {
+		t.Run(tc.cloud, func(t *testing.T) {
+			client := &http.Client{Transport: transport(func(r *http.Request) (*http.Response, error) {
+				return &http.Response{StatusCode: 200, Header: http.Header{"Content-Type": {"application/json"}}, Body: io.NopCloser(strings.NewReader(tc.body)), Request: r}, nil
+			})}
+			rows, err := Collect(context.Background(), Request{Provider: tc.cloud, Credential: "test-token"}, client, []string{"compute.image"})
+			if err != nil || len(rows) != 2 || !rows[0].Catalog || rows[1].Catalog {
+				t.Fatalf("image ownership classification: %v %v", rows, err)
+			}
+		})
+	}
+}

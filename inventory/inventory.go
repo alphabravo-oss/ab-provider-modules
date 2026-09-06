@@ -22,6 +22,7 @@ type Request struct {
 
 // Resource contains display metadata only, never credential-bearing SDK objects.
 type Resource struct {
+	Catalog                                                                           bool // Provider offerings, rather than account-owned infrastructure.
 	Tags                                                                              *Tags
 	ProviderIdentity, Kind, NativeID, Name, Region, Status, PublicIP, PrivateIP, Size string
 }
@@ -91,6 +92,7 @@ func Collect(ctx context.Context, r Request, client *http.Client, kinds []string
 		}
 		for j := range rows {
 			rows[j].Kind = kind
+			rows[j].Catalog = rows[j].Catalog || kind == "compute.type"
 		}
 		out = append(out, rows...)
 	}
