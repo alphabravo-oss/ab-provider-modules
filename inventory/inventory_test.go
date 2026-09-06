@@ -81,8 +81,8 @@ func TestCollectRejectsUnsupportedConfiguration(t *testing.T) {
 
 func TestImageCatalogOwnership(t *testing.T) {
 	for _, tc := range []struct{ cloud, body string }{
-		{"digitalocean", `{"images":[{"id":1,"name":"public","public":true,"status":"available"},{"id":2,"name":"owned","public":false,"status":"available"}],"links":{}}`},
-		{"hetzner", `{"images":[{"id":1,"name":"public","type":"system","status":"available"},{"id":2,"description":"owned","type":"snapshot","status":"available"}],"meta":{"pagination":{}}}`},
+		{"digitalocean", `{"images":[{"id":1,"name":"public","public":false,"slug":"marketplace-app","status":"available"},{"id":2,"name":"owned","public":false,"status":"available"}],"links":{}}`},
+		{"hetzner", `{"images":[{"id":1,"name":"public","type":"app","status":"available"},{"id":2,"description":"owned","type":"snapshot","status":"available"}],"meta":{"pagination":{}}}`},
 	} {
 		t.Run(tc.cloud, func(t *testing.T) {
 			client := &http.Client{Transport: transport(func(r *http.Request) (*http.Response, error) {

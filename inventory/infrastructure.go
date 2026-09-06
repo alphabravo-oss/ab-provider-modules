@@ -554,7 +554,7 @@ func doInfrastructure(ctx context.Context, r Request, client *http.Client, kind 
 					regions = []string{"global"}
 				}
 				for _, region := range regions {
-					rows = append(rows, Resource{Catalog: v.Public, Tags: &Tags{Names: v.Tags}, NativeID: strconv.Itoa(v.ID), Name: v.Name, Region: region, Status: v.Status, Size: fmt.Sprintf("%s · minimum disk %d GiB", v.Distribution, v.MinDiskSize)})
+					rows = append(rows, Resource{Catalog: v.Public || v.Slug != "", Tags: &Tags{Names: v.Tags}, NativeID: strconv.Itoa(v.ID), Name: v.Name, Region: region, Status: v.Status, Size: fmt.Sprintf("%s · minimum disk %d GiB", v.Distribution, v.MinDiskSize)})
 				}
 			}
 		case "access.ssh_key":
@@ -778,7 +778,7 @@ func hetznerInfrastructure(ctx context.Context, r Request, client *http.Client, 
 				if name == "" {
 					name = v.Description
 				}
-				rows = append(rows, Resource{Catalog: v.Type == hcloud.ImageTypeSystem, Tags: &Tags{Labels: v.Labels}, NativeID: strconv.FormatInt(v.ID, 10), Name: name, Region: "global", Status: string(v.Status), Size: fmt.Sprintf("%s · %s · %s %s", v.Type, v.Architecture, v.OSFlavor, v.OSVersion)})
+				rows = append(rows, Resource{Catalog: v.Type == hcloud.ImageTypeSystem || v.Type == hcloud.ImageTypeApp, Tags: &Tags{Labels: v.Labels}, NativeID: strconv.FormatInt(v.ID, 10), Name: name, Region: "global", Status: string(v.Status), Size: fmt.Sprintf("%s · %s · %s %s", v.Type, v.Architecture, v.OSFlavor, v.OSVersion)})
 			}
 		case "access.ssh_key":
 			var values []*hcloud.SSHKey
