@@ -4,6 +4,13 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    groups:
+      aws-sdk:
+        patterns: ["github.com/aws/*"]
+      azure-sdk:
+        patterns: ["github.com/Azure/*", "github.com/AzureAD/*"]
+      google-sdk:
+        patterns: ["cloud.google.com/go/*", "google.golang.org/*"]
     open-pull-requests-limit: 10
   - package-ecosystem: github-actions
     directory: /
