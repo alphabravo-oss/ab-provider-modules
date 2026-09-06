@@ -95,3 +95,42 @@ func TestImageCatalogOwnership(t *testing.T) {
 		})
 	}
 }
+
+func TestAmazonLinuxCatalog(t *testing.T) {
+	for _, badOwner := range []bool{false, true} {
+		calls := 0
+		client := &http.Client{Transport: transport(func(r *http.Request) (*http.Response, error) {
+			calls++
+			if err := r.ParseForm(); err != nil {
+				t.Fatal(err)
+			}
+			if r.Form.Get("Owner.1") != "amazon" || r.Form.Get("Filter.1.Name") != "public-ssm-parameter-name" {
+				t.Fatal("untrusted catalog query")
+			}
+			alias := "amazon"
+			if badOwner {
+				alias = "untrusted"
+			}
+			body := `<DescribeImagesResponse><imagesSet><item><imageId>ami-old</imageId><imageOwnerAlias>` + alias + `</imageOwnerAlias><architecture>x86_64</architecture><creationDate>2026-01-01T00:00:00Z</creationDate></item></imagesSet><nextToken>next</nextToken></DescribeImagesResponse>`
+			if calls == 2 {
+				body = `<DescribeImagesResponse><imagesSet><item><imageId>ami-new</imageId><imageOwnerAlias>amazon</imageOwnerAlias><architecture>x86_64</architecture><creationDate>2026-02-01T00:00:00Z</creationDate></item></imagesSet></DescribeImagesResponse>`
+			}
+			if calls > 2 {
+				t.Fatal("unexpected extra page")
+			}
+			return &http.Response{StatusCode: 200, Header: http.Header{"Content-Type": {"text/xml"}}, Body: io.NopCloser(strings.NewReader(body)), Request: r}, nil
+		})}
+		svc, err := awsClient(Request{Region: "us-east-1", AWS: aws.Credentials{AccessKeyID: "test", SecretAccessKey: "test"}}, client, 1)
+		if err != nil {
+			t.Fatal(err)
+		}
+		images, err := awsAmazonLinuxImages(context.Background(), svc)
+		if badOwner {
+			if err == nil {
+				t.Fatal("untrusted publisher accepted")
+			}
+		} else if err != nil || len(images) != 1 || aws.ToString(images[0].ImageId) != "ami-new" || calls != 2 {
+			t.Fatalf("latest image selection failed: %v %v", images, err)
+		}
+	}
+}

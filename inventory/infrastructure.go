@@ -245,13 +245,20 @@ func awsInfrastructure(ctx context.Context, r Request, client *http.Client, kind
 				return nil, 0, e
 			}
 			token = p.NextToken
+			if n == 1 {
+				published, err := awsAmazonLinuxImages(ctx, svc)
+				if err != nil {
+					return nil, 0, err
+				}
+				p.Images = append(p.Images, published...)
+			}
 			for _, v := range p.Images {
 				id := aws.ToString(v.ImageId)
 				label := aws.ToString(v.Name)
 				if label == "" {
 					label = id
 				}
-				rows = append(rows, Resource{Tags: ec2Labels(v.Tags), NativeID: id, Name: label, Region: r.Region, Status: string(v.State), Size: string(v.Architecture)})
+				rows = append(rows, Resource{Catalog: aws.ToString(v.ImageOwnerAlias) == "amazon", Tags: ec2Labels(v.Tags), NativeID: id, Name: label, Region: r.Region, Status: string(v.State), Size: string(v.Architecture)})
 			}
 		case "access.ssh_key":
 			p, e := svc.DescribeKeyPairs(ctx, &ec2.DescribeKeyPairsInput{})
@@ -866,4 +873,41 @@ func ec2Labels(tags []types.Tag) *Tags {
 		labels[aws.ToString(tag.Key)] = aws.ToString(tag.Value)
 	}
 	return &Tags{Labels: labels}
+}
+
+// Keep the creation catalog small; the exact image ID is frozen in the operation.
+func awsAmazonLinuxImages(ctx context.Context, svc *ec2.Client) ([]types.Image, error) {
+	pages := ec2.NewDescribeImagesPaginator(svc, &ec2.DescribeImagesInput{Owners: []string{"amazon"}, MaxResults: aws.Int32(1000), Filters: []types.Filter{
+		{Name: aws.String("public-ssm-parameter-name"), Values: []string{"aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64", "aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-arm64"}},
+		{Name: aws.String("state"), Values: []string{"available"}},
+		{Name: aws.String("root-device-type"), Values: []string{"ebs"}},
+	}})
+	latest := map[types.ArchitectureValues]types.Image{}
+	count := 0
+	for pages.HasMorePages() {
+		page, err := pages.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
+		count += len(page.Images)
+		if count > MaxResources {
+			return nil, errors.New("image catalog limit")
+		}
+		for _, v := range page.Images {
+			if aws.ToString(v.ImageOwnerAlias) != "amazon" || aws.ToString(v.CreationDate) == "" || aws.ToString(v.ImageId) == "" {
+				return nil, errors.New("invalid published image metadata")
+			}
+			old := latest[v.Architecture]
+			if aws.ToString(v.CreationDate) > aws.ToString(old.CreationDate) || (aws.ToString(v.CreationDate) == aws.ToString(old.CreationDate) && aws.ToString(v.ImageId) > aws.ToString(old.ImageId)) {
+				latest[v.Architecture] = v
+			}
+		}
+	}
+	out := []types.Image{}
+	for _, arch := range []types.ArchitectureValues{types.ArchitectureValuesX8664, types.ArchitectureValuesArm64} {
+		if v, ok := latest[arch]; ok {
+			out = append(out, v)
+		}
+	}
+	return out, nil
 }
