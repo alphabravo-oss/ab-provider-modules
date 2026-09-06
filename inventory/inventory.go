@@ -1,5 +1,5 @@
 // Package inventory collects operational inventory using explicit credentials.
-// Products own credential brokering, authorization, persistence and mutation.
+// Callers own credential resolution, authorization, persistence and mutation.
 package inventory
 
 import (
