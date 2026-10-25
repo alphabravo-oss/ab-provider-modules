@@ -20,7 +20,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/rds v1.128.0
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.111.0
 	github.com/aws/aws-sdk-go-v2/service/sts v1.45.7
-	github.com/digitalocean/godo v1.206.0
+	github.com/digitalocean/godo v1.231.0
 	github.com/hetznercloud/hcloud-go/v2 v2.47.0
 	github.com/linode/linodego v1.69.1
 	github.com/oracle/oci-go-sdk/v65 v65.123.2
